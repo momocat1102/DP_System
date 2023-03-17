@@ -76,13 +76,13 @@ def resnet_model(size=(224, 224, 3), classes=10):
     return model
 
 
-def train_model(model, train_dataset, valid_dataset):
+def train_model(model, train_dataset, valid_dataset, save_path="save"):
     reduce_lr = tf.keras.callbacks.ReduceLROnPlateau(monitor='val_loss', factor=0.5,
                             patience=1, mode='auto', verbose=0, cooldown=0,
                             min_lr=1e-7)
-    mod_check = tf.keras.callbacks.ModelCheckpoint(filepath="save/model.tf",
+    mod_check = tf.keras.callbacks.ModelCheckpoint(filepath=save_path + "/weights.{epoch:02d}-{val_loss:.2f}.hdf5",
                             save_weights_only=True,
-                            monitor='val_accuracy',
+                            monitor='val_loss',
                             mode='max',
                             verbose=0,
                             save_best_only=True)
