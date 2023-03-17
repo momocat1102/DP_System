@@ -76,7 +76,7 @@ def resnet_model(size=(224, 224, 3), classes=10):
     return model
 
 
-def train_model(model, train_dataset, valid_dataset, save_path="save"):
+def train_model(model, train_dataset, valid_dataset, epochs=10, save_path="save"):
     reduce_lr = tf.keras.callbacks.ReduceLROnPlateau(monitor='val_loss', factor=0.5,
                             patience=1, mode='auto', verbose=0, cooldown=0,
                             min_lr=1e-7)
@@ -95,7 +95,7 @@ def train_model(model, train_dataset, valid_dataset, save_path="save"):
     )
     history = model.fit(
             train_dataset,
-            epochs=10,
+            epochs=epochs,
             callbacks=[
                 reduce_lr,
                 mod_check],
