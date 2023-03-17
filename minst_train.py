@@ -29,7 +29,8 @@ def main():
     
     # 資料擴增
     data_aug = data_augmentation()
-    augmented_dataset = train_dataset.repeat(3).map(lambda x, y: (data_aug(x), y))
+    augdata_times = 9
+    augmented_dataset = train_dataset.repeat(augdata_times).map(lambda x, y: (data_aug(x), y))
     train_dataset = train_dataset.concatenate(augmented_dataset)
     train_dataset = train_dataset.map(lambda x, y: (tf.squeeze(x, axis=0), tf.squeeze(y, axis=0)))
     print("augmentation train dataset size:", train_dataset.cardinality().numpy())
@@ -49,7 +50,7 @@ def main():
     tf.keras.utils.plot_model(model, "model.png", show_shapes=True)
 
     # 訓練模型
-    model = train_model(model, train_dataset, valid_dataset, epochs=10, save_path="save")
+    model = train_model(model, train_dataset, valid_dataset, epochs=40, save_path="save")
 
     # 預測
     y_pred = model.predict(valid_dataset)
