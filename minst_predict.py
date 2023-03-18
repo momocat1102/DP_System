@@ -8,6 +8,7 @@ def main():
     class_names = ["airplane", "automobile", "bird", "cat", "deer",
                "dog", "frog", "horse", "ship", "truck"]
 
+    y_true = y_test
     # 將標籤數據轉換成 one-hot 編碼形式
     y_test = tf.keras.utils.to_categorical(y_test, num_classes=10)
 
@@ -20,14 +21,14 @@ def main():
 
     # 建立模型
     model = resnet_model(size=(32, 32, 3), classes=10)
-    model.load_weights("save/model.h5")
+    model.load_weights("save/weights.01-1.67.hdf5")
 
     # 預測
     y_pred = model.predict(test_dataset)
     y_pred = np.argmax(y_pred, axis=-1)
-    print(classification_report(y_test, y_pred, target_names=class_names))
+    print(classification_report(y_true, y_pred, target_names=class_names))
 
-    plot_confusion_matrix(y_test, y_pred)
+    plot_confusion_matrix(y_true, y_pred)
 
 
 

@@ -125,7 +125,7 @@ def plot_confusion_matrix(y_true, y_pred):
     cnf_matrix = confusion_matrix(y_true, y_pred)
     # 轉換成百分比
     cnf_matrix=cnf_matrix.astype('float')/cnf_matrix.sum(axis=1)
-    print(cnf_matrix.shape)
+    # print(cnf_matrix.shape)
     plt.figure(figsize=(10,10))
     plt.imshow(cnf_matrix, cmap='Blues')
     plt.colorbar()
