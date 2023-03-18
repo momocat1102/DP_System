@@ -20,7 +20,7 @@ def processing_image(img_path, inputsize):
 def gradcam(model, x, last_layer_name):
     # 取得影像的分類類別
     preds = model.predict(x)
-
+    print(preds.shape, preds)
     pred_class = np.argmax(preds[0])
     
     # 預測分類的輸出向量
@@ -52,7 +52,7 @@ def gradcam(model, x, last_layer_name):
     # 計算 feature map 的 channel-wise 加總
     heatmap = np.sum(conv_layer_output_value, axis=-1)
 
-    return heatmap
+    return heatmap, pred_class
 
 def plot_heatmap(heatmap, img_path, pred_class_name):
     # ReLU
@@ -91,14 +91,27 @@ heatmap = gradcam(model, img, pred_class_name) # 產生熱力圖
 
 plot_heatmap(heatmap, img_path, pred_class_name) # 熱力圖視覺化
 '''
-pred_class_name = ""
-model = get_model(classes=10)
-model.load_weights('./test/save_1/model.tf')
-print(model.summary())
-img_path = './test/BWS (1).jpg' # 測試相片
+def main():
+    (x_train, y_train), (x_test, y_test) = tf.keras.datasets.cifar10.load_data()
+    class_names = ["airplane", "automobile", "bird", "cat", "deer",
+               "dog", "frog", "horse", "ship", "truck"]
+    
+    test_img = x_train[90]
+    test_label = y_train[90][0]
+    cv2.imwrite('./test.jpg', test_img)
+    img_path = './test.jpg'
+    pred_layer_name = "conv5_block3_out"
+    model = resnet_model(size=(32, 32, 3), classes=10)
+    model.load_weights('save/weights.04-5.70.hdf5')
+    print(model.summary())
 
-img = processing_image(img_path, 224) # 相片預處理
+    img = processing_image(img_path, 32) # 相片預處理
 
-heatmap = gradcam(model, img, pred_class_name) # 產生熱力圖
+    heatmap, pred_class = gradcam(model, img, pred_layer_name) # 產生熱力圖
 
-plot_heatmap(heatmap, img_path, pred_class_name) # 熱力圖視覺化
+    title = class_names[pred_class] + " " + class_names[test_label]
+    plot_heatmap(heatmap, img_path, title) # 熱力圖視覺化
+
+
+if __name__ == '__main__':
+    main()
